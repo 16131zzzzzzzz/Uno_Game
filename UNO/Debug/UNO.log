@@ -1,0 +1,5 @@
+﻿  FinalClassPlayer.cpp
+C:\Users\zhuha\Desktop\c++\UNO Game\UNO0.1\FinalClassPlayer.cpp(7,30): error C2512: “CardPile”: 没有合适的默认构造函数可用
+C:\Users\zhuha\Desktop\c++\UNO Game\UNO0.1\FinalCardPile.h(9,7): message : 参见“CardPile”的声明
+C:\Users\zhuha\Desktop\c++\UNO Game\UNO0.1\FinalClassPlayer.cpp(11,48): error C2512: “CardPile”: 没有合适的默认构造函数可用
+C:\Users\zhuha\Desktop\c++\UNO Game\UNO0.1\FinalCardPile.h(9,7): message : 参见“CardPile”的声明
