@@ -5,16 +5,19 @@
 #include<ctime>
 #include<string>
 #include <SFML/Graphics.hpp>
+#include<SFML/Audio.hpp>
 using namespace std;
 
-Player PlayerPile[4];
+Player player_pile[4];
 CardPile Pile;
 CardPile* ptrPile;
-Card frontcard;
+Card frontcard;//used for display
+Card assigned_card;
+Card outcard;
 int flag = 0;
 bool order = 1;
 int outcardnum;
-Card outcard;
+
 
 int flagModify(int input_flag)
 {
@@ -36,7 +39,7 @@ bool gameState()
     bool endgame = 0;
     for (int i = 0; i < 4; i++)
     {
-        if (PlayerPile[i].cards.isEmpty())
+        if (player_pile[i].cards.isEmpty())
         {
             endgame = 1;
             cout << "Player" << i + 1 << " won!!!";
@@ -48,28 +51,52 @@ bool gameState()
 }
 
 void giveCard(int input_num) {
-    PlayerPile[input_num].cards.push((*ptrPile).pop());
+    player_pile[input_num].cards.push((*ptrPile).pop());
 }
 
-bool judgeCard()
+bool judgeCard(int input_judge_num)
 {
-    return frontcard.getColor() == PlayerPile[flag].cards.getCard(outcardnum).getColor() || frontcard.getNum() == PlayerPile[flag].cards.getCard(outcardnum).getNum() || PlayerPile[flag].cards.getCard(outcardnum).getColor() == 0;
+    return
+       assigned_card.getColor() == player_pile[flag].cards.getCard(input_judge_num).getColor()
+        || assigned_card.getNum() == player_pile[flag].cards.getCard(input_judge_num).getNum()
+        || player_pile[flag].cards.getCard(input_judge_num).getColor() == 0
+        || assigned_card.getColor() == 0;
 }
+
+bool judgeCardPile(CardPile input_judge_pile) {
+    bool sign = false;
+    for (int i = 0; i < input_judge_pile.getNum(); i++) {
+        if (judgeCard(i)) {
+            sign = true;
+            break;
+        }
+    }
+    return sign;
+}
+//
 
 void action() {
     int step = 1;
+    assigned_card = outcard;//
     if (outcard.getNum() == 14) {
         int temp;
         cout << "Please select the color you want to assigned to the next card.(enter the number before the color)\n";
         cout << "1.Red   2.Blue  3.Green  4.Yellow\nWARNING:any number invalid is considered as Red";
         cin >> temp;
-        outcard.setColor(temp);
+        assigned_card.setColor(temp);//
     }
     if (outcard.getNum() == 13) {
-        for (int x = 0; x < 4; x++)giveCard(flag + 1);
+        for (int x = 0; x < 4; x++)giveCard(order?flag+1:flag - 1);
+        int temp;
+        cout << "Please select the color you want to assigned to the next card.(enter the number before the color)\n";
+        cout << "1.Red   2.Blue  3.Green  4.Yellow\nWARNING:any number invalid is considered as Red";
+        cin >> temp;
+        assigned_card.setColor(temp);//
     }
     if (outcard.getNum() == 12) {
-        for (int x = 0; x < 2; x++)giveCard(flag + 1);
+        for (int x = 0; x < 2; x++)giveCard(order?flag+1:flag - 1);
+        cout << "The next player is passed.";
+        step += 1;
     }
     if (outcard.getNum() == 11) {
         order = !order;
@@ -81,6 +108,7 @@ void action() {
     frontcard = outcard;
     moveflag(step);
 }
+//
 
 int windowx = 1440;
 int windowy = 840;
@@ -132,9 +160,9 @@ void displayOthers()
     int flagbefore = flagModify(flag - 1);
     int flagafter = flagModify(flag + 1);
     int flagopp = flagModify(flag + 2);
-    CardPile before = PlayerPile[flagbefore].cards;
-    CardPile after = PlayerPile[flagafter].cards;
-    CardPile opp = PlayerPile[flagopp].cards;
+    CardPile before = player_pile[flagbefore].cards;
+    CardPile after = player_pile[flagafter].cards;
+    CardPile opp = player_pile[flagopp].cards;
 
     float halfx = windowx / 2 - (before.getNum() * 85 - (before.getNum() - 1) * 35) / 2;
     float halfy = windowy / 2 - 64;
@@ -230,6 +258,10 @@ void displayPile(CardPile input_pile)
 }
 
 int main(int argc, char** argv[]) {
+    sf::Music music;
+    music.openFromFile("Resource/BackGroundMusic.ogg");
+    music.play();
+    music.setLoop(true);
     while (window.isOpen())
     {
         sf::Event event;
@@ -256,7 +288,7 @@ int main(int argc, char** argv[]) {
         }
 
         frontcard = Pile.pop();
-
+        assigned_card = frontcard;
         while (gameState())
         {
             window.clear();
@@ -268,9 +300,9 @@ int main(int argc, char** argv[]) {
             window.clear(sf::Color::Black);
 
             cout << "Player" << flag + 1 << "'s turn!" << endl << endl;
-            cout << "The card before is; " << frontcard << endl;
-            cout << PlayerPile[flag].cards << endl;
-            displayPile(PlayerPile[flag].cards);
+            cout << "The card you play should have one figure same with those figures:" << assigned_card << endl;
+            cout << player_pile[flag].cards << endl;
+            displayPile(player_pile[flag].cards);
             cout << "Play a card?[y/n]";
             string a;
             cin >> a;
@@ -279,9 +311,9 @@ int main(int argc, char** argv[]) {
                 cout << "pick a card" << endl;
                 giveCard(flag);
                 cout << "Now you have these cards: " << endl;
-                cout << PlayerPile[flag].cards << endl;
+                cout << player_pile[flag].cards << endl;
                 window.clear();
-                displayPile(PlayerPile[flag].cards);
+                displayPile(player_pile[flag].cards);
                 cout << "Play a card?[y/n]";
                 string b;
                 cin >> b;
@@ -290,7 +322,13 @@ int main(int argc, char** argv[]) {
                     moveflag(1);
                 }
                 else
-                {                        
+                { 
+                    if (!judgeCardPile(player_pile[flag].cards)) {
+                        cout << "You have no card for play\n.";
+                        moveflag(1);
+                        goto End0;
+                    }
+
                     cout << "which?(press it)" << endl;
                     do
                     {
@@ -301,19 +339,25 @@ int main(int argc, char** argv[]) {
                                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                                 if ((float)mousePos.y <= windowy && (float)mousePos.y >= windowy - 128)
                                 {
-                                    float k = windowx / 2 - (PlayerPile[flag].cards.getNum() * 85 - (PlayerPile[flag].cards.getNum() - 1) * 35) / 2;
+                                    float k = windowx / 2 - (player_pile[flag].cards.getNum() * 85 - (player_pile[flag].cards.getNum() - 1) * 35) / 2;
                                     outcardnum = int((mousePos.x - k)/50);
                                     break;
                                 }
                             }
                         }
-                    } while (!judgeCard());
-                    outcard = PlayerPile[flag].cards.pop(outcardnum);
+                    } while (!judgeCard(outcardnum));
+                    outcard = player_pile[flag].cards.pop(outcardnum);
                     action();
+                End0:;
                 }
             }
             else
             {
+                if (!judgeCardPile(player_pile[flag].cards)) {
+                    cout << "You have no card for play.\n";
+                    moveflag(1);
+                    goto End;
+                }
                 cout << "which?(press it)" << endl;
                 do
                 {
@@ -324,19 +368,21 @@ int main(int argc, char** argv[]) {
                             sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                             if ((float)mousePos.y <= windowy && (float)mousePos.y >= windowy - 128)
                             {
-                                float k = windowx / 2 - (PlayerPile[flag].cards.getNum() * 85 - (PlayerPile[flag].cards.getNum() - 1) * 35) / 2;
+                                float k = windowx / 2 - (player_pile[flag].cards.getNum() * 85 - (player_pile[flag].cards.getNum() - 1) * 35) / 2;
                                 outcardnum = int((mousePos.x - k) / 50);
                                 break;
                             }
                         }
                     }
-                } while (!judgeCard());
-                outcard = PlayerPile[flag].cards.pop(outcardnum);
+                } while (!judgeCard(outcardnum));
+                outcard = player_pile[flag].cards.pop(outcardnum);
                 action();
+            End:;
             }
             cout << "****************************" << endl;
         }
         window.clear(sf::Color::Black);
     }
+    cout << "The game is over\n";
     system("pause");
 }
