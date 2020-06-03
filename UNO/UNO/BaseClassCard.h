@@ -14,7 +14,7 @@ public:
 	int getNum()const;
 	void setColor(int);
 protected:
-	int protected_card_color;//Ranging [0,4] 
+	int protected_card_color;//Ranging [0,4]
 	int protected_card_num;//Ranging [0,14]
 };
 
