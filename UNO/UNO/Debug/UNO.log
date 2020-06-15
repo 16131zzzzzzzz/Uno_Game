@@ -1,7 +1,4 @@
-﻿  BaseClassCard.cpp
-  FinalCardPile.cpp
-  FinalClassPlayer.cpp
-  TestingUnoMain.cpp
+﻿  TestingUnoMain.cpp
 D:\学习(大一下)\c++\UNO Game\UNO_3.1\UNO\UNO\TestingUnoMain.cpp(167,17): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
 D:\学习(大一下)\c++\UNO Game\UNO_3.1\UNO\UNO\TestingUnoMain.cpp(168,17): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
 D:\学习(大一下)\c++\UNO Game\UNO_3.1\UNO\UNO\TestingUnoMain.cpp(193,13): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
@@ -20,6 +17,5 @@ D:\学习(大一下)\c++\UNO Game\UNO_3.1\UNO\UNO\TestingUnoMain.cpp(250,44): wa
 D:\学习(大一下)\c++\UNO Game\UNO_3.1\UNO\UNO\TestingUnoMain.cpp(253,49): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
 D:\学习(大一下)\c++\UNO Game\UNO_3.1\UNO\UNO\TestingUnoMain.cpp(342,45): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
 D:\学习(大一下)\c++\UNO Game\UNO_3.1\UNO\UNO\TestingUnoMain.cpp(371,41): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
-  正在生成代码...
 D:\学习(大一下)\c++\UNO Game\UNO_3.1\UNO\UNO\TestingUnoMain.cpp(156): warning C4715: “guiTrany”: 不是所有的控件路径都返回值
   UNO.vcxproj -> D:\学习(大一下)\c++\UNO Game\UNO_3.1\UNO\Debug\UNO.exe

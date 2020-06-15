@@ -258,10 +258,10 @@ void displayPile(CardPile input_pile)
 }
 
 int main(int argc, char** argv[]) {
-    sf::Music music;
-    music.openFromFile("Resource/BackGroundMusic.ogg");
-    music.play();
-    music.setLoop(true);
+    //sf::Music music;
+    //music.openFromFile("Resource/BackGroundMusic.ogg");
+    //music.play();
+    //music.setLoop(true);
     while (window.isOpen())
     {
         sf::Event event;
